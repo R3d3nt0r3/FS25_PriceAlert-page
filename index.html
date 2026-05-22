@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Price Alert — Farming Simulator 25 Mod</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #a8ff00;
+    --green-dim: #6abf00;
+    --orange: #ff6600;
+    --dark: #0a0d0a;
+    --dark2: #111811;
+    --dark3: #161e16;
+    --panel: #0f140f;
+    --border: #2a3a2a;
+    --text: #c8d8c0;
+    --text-dim: #6a8a6a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: radial-gradient(ellipse at 50% 0%, rgba(168,255,0,0.06) 0%, transparent 70%);
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+  }
+
+  .hero-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    margin: 0 auto 32px;
+    display: block;
+    box-shadow: 0 0 60px rgba(168,255,0,0.3), 0 0 120px rgba(168,255,0,0.1);
+    border: 1px solid rgba(168,255,0,0.3);
+  }
+
+  .hero h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .hero h1 span {
+    color: var(--green);
+    text-shadow: 0 0 40px rgba(168,255,0,0.5);
+  }
+
+  .hero-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+
+  .badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .badge.green {
+    border-color: rgba(168,255,0,0.4);
+    color: var(--green);
+    background: rgba(168,255,0,0.05);
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--green);
+    color: #000;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 16px 40px;
+    text-decoration: none;
+    transition: all 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  .download-btn:hover {
+    background: #fff;
+    box-shadow: 0 0 40px rgba(168,255,0,0.6);
+    transform: translateY(-2px);
+  }
+
+  .download-btn svg {
+    width: 20px; height: 20px;
+  }
+
+  .version-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 16px;
+    letter-spacing: 0.1em;
+  }
+
+  /* Main container */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* Section */
+  section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  /* Description */
+  .desc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  @media (max-width: 700px) {
+    .desc-grid { grid-template-columns: 1fr; }
+  }
+
+  .desc-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+
+  .desc-panel .lang {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--green);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .desc-panel .lang::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .desc-panel p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .desc-panel ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .desc-panel ul li {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text);
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .desc-panel ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--green);
+    font-size: 10px;
+    top: 2px;
+  }
+
+  .note {
+    margin-top: 20px;
+    padding: 12px 16px;
+    border-left: 2px solid var(--orange);
+    background: rgba(255,102,0,0.05);
+    font-size: 12px;
+    color: var(--orange);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* Screenshots */
+  .screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 2px;
+  }
+
+  @media (max-width: 600px) {
+    .screenshots-grid { grid-template-columns: 1fr; }
+  }
+
+  .screenshot-item {
+    position: relative;
+    overflow: hidden;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    cursor: pointer;
+  }
+
+  .screenshot-item img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s ease, filter 0.4s ease;
+    filter: brightness(0.9);
+  }
+
+  .screenshot-item:hover img {
+    transform: scale(1.03);
+    filter: brightness(1.05);
+  }
+
+  .screenshot-item .caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    padding: 24px 16px 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .screenshot-item:hover .caption {
+    opacity: 1;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .lightbox.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border: 1px solid var(--border);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 24px; right: 32px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px;
+    color: var(--text-dim);
+    cursor: pointer;
+    letter-spacing: 0.1em;
+  }
+
+  .lightbox-close:hover { color: var(--green); }
+
+  /* Footer */
+  footer {
+    padding: 48px 40px;
+    text-align: center;
+  }
+
+  footer p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+  }
+
+  footer p span {
+    color: var(--green);
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero > * {
+    animation: fadeIn 0.6s ease both;
+  }
+
+  .hero-icon { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.2s; }
+  .hero-sub { animation-delay: 0.3s; }
+  .badge-row { animation-delay: 0.4s; }
+  .download-btn { animation-delay: 0.5s; }
+  .version-note { animation-delay: 0.6s; }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <img src="screenshots/icon.png" alt="Price Alert Icon" class="hero-icon">
+  <h1>Price <span>Alert</span></h1>
+  <p class="hero-sub">Farming Simulator 25 — Script Mod — v1.0.0.0</p>
+  <div class="badge-row">
+    <span class="badge green">v1.0.0.0</span>
+    <span class="badge">Single Player</span>
+    <span class="badge">7 Languages</span>
+    <span class="badge">FS25</span>
+  </div>
+  <a href="https://mega.nz/file/N95yFYRI#Mj3ZO-wLwxzDy5HRiKwhp30686dhy1fJw-ApFLIZD70" class="download-btn" target="_blank">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/></svg>
+    Download
+  </a>
+  <p class="version-note">Free download · No registration required</p>
+</div>
+
+<!-- Description -->
+<section>
+  <div class="container">
+    <div class="section-label">About</div>
+    <div class="section-title">What is Price Alert?</div>
+    <div class="desc-grid">
+      <div class="desc-panel">
+        <div class="lang">🇬🇧 English</div>
+        <p><strong style="color:#fff">Price Alert</strong> is a script mod for Farming Simulator 25 that adds a complete price monitoring system integrated directly into the in-game menu. Never miss the right moment to sell your products or animals again.</p>
+        <ul>
+          <li>Tracks stock levels and selling prices for all product types: silos, production buildings, bales, pallets, and goods loaded on vehicles and trailers. Animals are monitored with breed-specific logic, also displaying age in months and health status</li>
+          <li>Four tabs: Products in Stock, Products with Active Alert, Unsellable Products, All Products</li>
+          <li>Configure custom alert thresholds for each product or animal breed: minimum quantity in stock and minimum price percentage relative to the best possible price</li>
+          <li>Products that have reached their configured thresholds blink in the menu. Two types of in-game alerts are available: a non-invasive notification that appears without interrupting gameplay, and an invasive popup that stops fast-forward and sleep mode, restoring time to normal speed (1x)</li>
+          <li>View all storage locations, enclosures and selling points for each product or animal, with map hotspot marking. The best selling point is highlighted, but all available ones are accessible</li>
+          <li>Supports 7 languages: English, Italian, German, French, Polish, Spanish, Portuguese</li>
+        </ul>
+        <div class="note">⚠ This version supports single player only.</div>
+      </div>
+      <div class="desc-panel">
+        <div class="lang">🇮🇹 Italiano</div>
+        <p><strong style="color:#fff">Price Alert</strong> è una mod script per Farming Simulator 25 che aggiunge un sistema completo di monitoraggio dei prezzi integrato direttamente nel menu di gioco. Non perdere mai più il momento giusto per vendere i tuoi prodotti o animali.</p>
+        <ul>
+          <li>Rileva le quantità in stock e i prezzi di vendita per tutti i tipi di prodotto: silos, edifici di produzione, balle, pallet e merci caricate su veicoli e rimorchi. Gli animali sono monitorati con logica specifica per razza, mostrando anche l'età in mesi e lo stato di salute</li>
+          <li>Quattro tab: Prodotti in Stock, Prodotti con Alert Attivo, Prodotti non Vendibili, Tutti i Prodotti</li>
+          <li>Configura soglie di alert personalizzate per ogni prodotto o razza animale: quantità minima in stock e percentuale minima sul prezzo migliore possibile</li>
+          <li>I prodotti che hanno raggiunto le soglie configurate lampeggiano nel menu. Sono disponibili due tipi di alert in gioco: una notifica non invasiva che appare senza interrompere il gameplay, e un popup invasivo che interrompe l'avanzamento veloce del tempo e la modalità sonno, riportando la velocità a 1x</li>
+          <li>Visualizza tutti i magazzini, recinti e punti di vendita per ogni prodotto o animale, con possibilità di marcare gli hotspot sulla mappa. Il miglior punto di vendita viene evidenziato, ma tutti quelli disponibili sono accessibili</li>
+          <li>Supporta 7 lingue: Inglese, Italiano, Tedesco, Francese, Polacco, Spagnolo, Portoghese</li>
+        </ul>
+        <div class="note">⚠ Questa versione supporta solo il single player.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Screenshots -->
+<section>
+  <div class="container">
+    <div class="section-label">Screenshots</div>
+    <div class="section-title">In Action</div>
+    <div class="screenshots-grid">
+      <div class="screenshot-item" onclick="openLightbox('screenshots/1.png')">
+        <img src="screenshots/1.png" alt="Products in Stock">
+        <div class="caption">Products in Stock</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('screenshots/2.png')">
+        <img src="screenshots/2.png" alt="Products with Alert">
+        <div class="caption">Products with Active Alert</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('screenshots/3.png')">
+        <img src="screenshots/3.png" alt="Unsellable Products">
+        <div class="caption">Unsellable Products</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('screenshots/4.png')">
+        <img src="screenshots/4.png" alt="All Products Configuration">
+        <div class="caption">All Products — Configuration</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('screenshots/5.png')">
+        <img src="screenshots/5.png" alt="Invasive Alert Popup">
+        <div class="caption">Invasive Alert Popup</div>
+      </div>
+      <div class="screenshot-item" onclick="openLightbox('screenshots/6.png')">
+        <img src="screenshots/6.png" alt="Non-invasive Notification">
+        <div class="caption">Non-invasive In-game Notification</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>Made by <span>Redentore</span> · Farming Simulator 25 · <span>v1.0.0.0</span></p>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-close" onclick="closeLightbox()">✕ CLOSE</div>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('active');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+
+</body>
+</html>
