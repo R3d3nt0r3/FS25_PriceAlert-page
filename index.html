@@ -403,6 +403,59 @@
     color: var(--green);
   }
 
+  /* About Author */
+  .about-wrap {
+    border: 1px solid var(--border);
+    background: var(--panel);
+  }
+
+  .about-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    color: var(--text);
+  }
+
+  .about-btn:hover { background: rgba(168,255,0,0.03); }
+
+  .about-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--green);
+    text-transform: uppercase;
+  }
+
+  .about-arrow {
+    font-size: 14px;
+    color: var(--text-dim);
+    transition: transform 0.3s;
+  }
+
+  .about-arrow.open { transform: rotate(180deg); }
+
+  .about-body {
+    display: none;
+    padding: 28px;
+  }
+
+  .about-body.open { display: block; }
+
+  .about-body p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .about-body p:last-child { margin-bottom: 0; }
+
   /* Animations */
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -511,6 +564,36 @@
     </div>
   </div>
 </section>
+
+<!-- About Author -->
+<section>
+  <div class="container">
+    <div class="section-label">About</div>
+    <div class="section-title">The Author</div>
+    <div class="about-wrap">
+      <button class="about-btn" onclick="toggleAbout()">
+        <span class="about-label">▸ About the author</span>
+        <span class="about-arrow" id="about-arrow">▼</span>
+      </button>
+      <div class="about-body" id="about-body">
+        <div class="desc-grid">
+          <div class="desc-panel" lang="en">
+            <div class="lang">🇬🇧 English</div>
+            <p>I'm Redentore, an old school gamer born in 1981 who discovered the joy of modding with Farming Simulator 25. Price Alert is my first mod — after putting a lot of work into it, I decided to distribute it independently rather than through official channels, because I believe in keeping things simple and direct.</p>
+            <p>I enjoy building things and seeing them come to life — whether it's a mod, a website, or anything else. That's why I built this page from scratch instead of using existing platforms.</p>
+            <p>Regarding the official GIANTS ModHub: I did submit the mod, but after multiple rejections during the pre-screening phase — with feedback so vague it was nearly impossible to understand what actually needed fixing — I decided to take a different path. Working in an advanced technical support helpdesk, I know firsthand how important clear, actionable feedback is when someone is trying to solve a problem. The mod works: in-game testing shows zero errors and zero warnings, and it passed the official GIANTS TestRunner successfully.</p>
+          </div>
+          <div class="desc-panel" lang="it">
+            <div class="lang">🇮🇹 Italiano</div>
+            <p>Sono Redentore, un old school gamer classe 1981 che ha scoperto il mondo del modding con Farming Simulator 25. Price Alert è la mia prima mod — dopo averci lavorato a lungo, ho deciso di distribuirla in modo indipendente anziché attraverso i canali ufficiali, perché credo nella semplicità e nel contatto diretto.</p>
+            <p>Mi piace costruire cose e vederle realizzate — che sia una mod, un sito web, o qualsiasi altra cosa. Per questo ho preferito creare questa pagina da zero invece di usare piattaforme già esistenti.</p>
+            <p>Riguardo al ModHub ufficiale di GIANTS: ho provato a pubblicare la mod, ma dopo diversi rifiuti nella fase di pre-screening — con feedback così vaghi da rendere quasi impossibile capire cosa correggere — ho deciso di prendere una strada diversa. Lavorando in un helpdesk tecnico avanzato, so bene quanto sia importante ricevere un feedback chiaro e utile quando si cerca di risolvere un problema. La mod funziona: i test in-game mostrano zero errori e zero warning, e ha superato con successo il TestRunner ufficiale di GIANTS.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 </main>
 
 <!-- Footer -->
@@ -531,6 +614,10 @@
   }
   function closeLightbox() {
     document.getElementById('lightbox').classList.remove('active');
+  }
+  function toggleAbout() {
+    document.getElementById('about-body').classList.toggle('open');
+    document.getElementById('about-arrow').classList.toggle('open');
   }
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeLightbox();
