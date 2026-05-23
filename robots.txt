@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://r3d3nt0r3.github.io/FS25_PriceAlert-page/sitemap.xml
