@@ -302,11 +302,11 @@
   /* Screenshots */
   .screenshots-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
     gap: 2px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     .screenshots-grid { grid-template-columns: 1fr; }
   }
 
